@@ -1,0 +1,42 @@
+
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.tymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{common/mylayout}">
+<div class="content" layout:fragment="content">
+    <div class="col-6" style="margin-left: 250px;">
+        <h2>강의 상세보기</h2>
+        <table class="table">
+            <tr>
+                <td>강의명</td>
+                <td th:text="${lecture.title}"></td>
+            </tr>
+            <tr>
+                <td>전공</td>
+                <td th:text="${lecture.major}"></td>
+            </tr>
+            <tr>
+                <td>교수명</td>
+                <td th:text="${lecture.professor}"></td>
+            </tr>
+            <tr>
+                <td>수강 대상</td>
+                <td><span th:text="${lecture.grade}"/>학년</td>
+            </tr>
+            <tr>
+                <td>학점</td>
+                <td th:text="${lecture.credit}"></td>
+            </tr>
+            <tr>
+                <td>강의 시간</td>
+                <td><span th:text="${lecture.day}"/> (<span th:text="${lecture.time}"/>시)</td>
+            </tr>
+            <tr>
+                <td>강의 내용</td>
+                <td th:text="${lecture.content}"></td>
+            </tr>
+        </table>
+        <button class="btn btn-primary"onclick="location.href='/'">돌아가기</button>
+    </div>
+</div>
+</html>

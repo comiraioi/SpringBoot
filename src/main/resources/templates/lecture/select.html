@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="en"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{common/mylayout}">
+
+<th:block layout:fragment="script">
+  <script th:inline = "javascript">
+        function allchk(){
+            var checklist = document.getElementsByName('row');
+            var is_checked = document.getElementById('all').checked;
+            for(var i=0;i<checklist.length;i++){
+                if(is_checked){
+                   $('input[name=row]').prop('checked',true);
+                }else{
+                    $('input[name=row]').prop('checked',false);
+                }
+            }
+        }
+
+        function checkDelete(){ // 선택항목 삭제
+         var rowchk = document.getElementsByName('row');
+         var flag = false;
+
+         for(i=0; i<rowchk.length; i++){
+             if(rowchk[i].checked){
+                 flag = true;
+             }
+         }
+
+         if(!flag){
+             alert('삭제할 강의를 선택하세요.');
+         }else{
+             var con = confirm("해당 강의를 삭제하시겠습니까?");
+             if(con == false){
+               alert("삭제가 취소되었습니다.");
+               return false;
+             }
+
+             document.myform.submit();
+         }
+      }
+    </script>
+</th:block>
+<div class="content" layout:fragment="content">
+  <!-- admin, professor 사용자만 접근 가능한 페이지입니다.<br><br> -->
+  <h2>강의 목록</h2>
+  <form name="myform" action="/lecture/checkDelete" method="post">
+    <table class="table">
+      <thead>
+      <tr>
+        <th>
+          <input type="checkbox" id="all" onclick="allchk()">
+        </th>
+        <th>#</th>
+        <th>전공</th>
+        <th>강의명</th>
+        <th>교수명</th>
+        <th>수강 대상</th>
+        <th>강의일</th>
+        <th>학점</th>
+        <th>수강 정원</th>
+        <th>수정</th>
+        <th>삭제</th>
+      </tr>
+      </thead>
+      <tbody>
+      <tr th:each="lecture:${lectureList}">
+        <td>
+          <input type="checkbox" name="row" th:value="${lecture.lecno}">
+        </td>
+        <td th:text="${lecture.lecno}"></td>
+        <td th:text="${lecture.major}"></td>
+        <td>
+          <a th:href="@{/lecture/detail(lecno=${lecture.lecno})}"  th:text="${lecture.title}">
+          </a>
+        </td>
+        <td th:text="${lecture.professor}"></td>
+        <td><span th:text="${lecture.grade}"/><span>학년</span></td>
+        <td><span th:text="${lecture.day}"/> (<span th:text="${lecture.time}"/>시)</td>
+        <td th:text="${lecture.credit}"></td>
+        <td th:text="${lecture.limit}"></td>
+        <td>
+          <a th:href="@{/lecture/update(lecno=${lecture.lecno})}">수정</a>
+        </td>
+        <td>
+          <a th:href="@{'/lecture/delete?lecno=' + ${lecture.lecno}}">삭제</a>
+        </td>
+      </tr>
+      </tbody>
+    </table>
+    <div style="text-align:center;">
+      <button type="button" class="btn btn-primary" onclick="location.href='/lecture/insert'">추가</button>
+      &nbsp;&nbsp;
+      <button type="button" class="btn btn-danger" onclick="checkDelete()">선택항목 삭제</button>
+    </div>
+  </form>
+</div>
+</html>

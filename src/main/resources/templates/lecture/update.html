@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="en"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{common/mylayout}">
+<th:block layout:fragment="script">
+  <script th:inline = "javascript">
+    $(document).ready(function(){
+      var gradeStr = [[${lectureBean.grade}]];
+      console.log('gradeStr:' + gradeStr);
+
+      var gradeList = $('input[name=grade]');
+      gradeList.each(function(){
+        var curr = $(this).val();
+        var result = gradeStr.indexOf(curr);
+        console.log(curr +":"+result);
+         if(result != -1){
+            $(this).attr('checked',true);
+         }
+      });
+
+    });
+    </script>
+</th:block>
+<th:block layout:fragment="css">
+  <style>
+        .fieldError{
+            color : red;
+            font-size:11pt;
+        }
+    </style>
+</th:block>
+
+<div class="content" layout:fragment="content">
+  <form class="row" name="myform" method="post" action="/lecture/update" th:object="${lectureBean}">
+    <input type = "hidden" name = "lecno" th:value = "*{lecno}">
+    <legend align="center">강의 수정하기</legend><br>
+    <div class="col-md-12 form-group">
+      <b>강의명</b>
+      <input type="text" class="form-control" th:field="${lectureBean.title}">
+      <p th:if="${#fields.hasErrors('title')}" th:errors="*{title}" class="fieldError"></p>
+    </div>
+    <div class="col-md-4 form-group">
+      <b>전공</b>
+      <select class="form-control" th:field="${lectureBean.major}">
+        <option value="">전공을 선택하세요</option>
+        <option th:each = "major: ${major}" th:value="${major}" th:text="${major}"></option>
+      </select>
+      <p th:if="${#fields.hasErrors('major')}" th:errors="*{major}" class="fieldError"></p>
+    </div>
+    <div class="col-md-4 form-group">
+      <b>교수명</b>
+      <input type="text" class="form-control" th:field="${lectureBean.professor}">
+      <p th:if="${#fields.hasErrors('professor')}" th:errors="*{professor}" class="fieldError"></p>
+    </div>
+    <div class="col-md-4 form-group">
+      <b>수강 정원</b>
+      <input type="number" class="form-control" th:field="${lectureBean.limit}">
+      <p th:if="${#fields.hasErrors('limit')}" th:errors="*{limit}" class="fieldError"></p>
+    </div>
+    <div class="col-md-6 form-group">
+      <b>수강 대상</b>
+      <div>
+        <span th:each="grade: ${#numbers.sequence(1, 4)}">
+          <div class="form-check-inline">
+            <input type="checkbox" class="form-check-input" name="grade" th:value="${grade}" th:text="${grade}+학년">
+          </div>
+        </span>
+      </div>
+      <p th:if="${#fields.hasErrors('grade')}" th:errors="*{grade}" class="fieldError"></p>
+    </div>
+    <div class="col-md-6 form-group">
+      <b>학점</b>
+      <div>
+        <span th:each="credit: ${#numbers.sequence(1, 3)}">
+          <div class="form-check-inline">
+            <input type="radio" class="form-check-input" th:value="${credit}" th:field="${lectureBean.credit}" th:text="${credit}+학점">
+          </div>
+        </span>
+      </div>
+      <p th:if="${#fields.hasErrors('credit')}" th:errors="*{credit}" class="fieldError"></p>
+    </div>
+    <div class="col-md-6 form-group">
+      <b>강의 요일</b>
+      <select class="form-control" th:field="${lectureBean.day}" required>
+        <option value="">요일을 선택하세요</option>
+        <option th:each="day : ${day}" th:value="${day}" th:text="${day}"></option>
+      </select>
+      <p th:if="${#fields.hasErrors('day')}" th:errors="*{day}" class="fieldError"></p>
+    </div>
+    <div class="col-md-6 form-group">
+      <b>강의 시간</b>
+      <select class="form-control" th:field="${lectureBean.time}" required>
+        <option value="">시간을 선택하세요</option>
+        <option th:each="time : ${time}" th:value="${time}" th:text="${time}"></option>
+      </select>
+      <p th:if="${#fields.hasErrors('time')}" th:errors="*{time}" class="fieldError"></p>
+    </div>
+    <div class="col-md-12 form-group">
+      <b>강의 내용</b>
+      <textarea class="form-control" rows="3" th:field="${lectureBean.content}" th:text="${lectureBean.content}"></textarea>
+    </div>
+    <div class="col-auto">
+      <button type="submit" class="btn btn-primary">수정하기</button>
+    </div>
+  </form>
+</div>
+
+</html>
